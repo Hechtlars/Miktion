@@ -40,7 +40,7 @@
 </section>
 
 <div class="actions no-print">
- <button class="action" onclick="openEntry('drink')"><span>💧</span><div>Getrunken<div class="sub">Menge schnell eintragen</div></div></button>
+ <button class="action" onclick="openEntry('drink')"><span>💧</span><div>Trinkmenge<div class="sub">Menge schnell eintragen</div></div></button>
  <button class="action" onclick="openEntry('void')"><span>🚽</span><div>Wasser gelassen<div class="sub">Harnmenge & Harndrang</div></div></button>
  <button class="action" onclick="openEntry('leak')"><span>💦</span><div>Urin verloren<div class="sub">Menge, Situation & Vorlage</div></div></button>
 </div>
@@ -74,9 +74,9 @@
 <script>
 const KEY='blasentagebuch.v1';
 let db=JSON.parse(localStorage.getItem(KEY)||'{"start":"","entries":[],"sleep":{},"settings":{"days":3}}');
-if(!db.start){db.start=new Date().toISOString().slice(0,10);save()}
 let selectedDate=new Date().toISOString().slice(0,10);
-const labels={drink:'Getrunken',void:'Wasser gelassen',leak:'Urin verloren'};
+if(!db.start){db.start=selectedDate;localStorage.setItem(KEY,JSON.stringify(db));}
+const labels={drink:'Trinkmenge',void:'Wasser gelassen',leak:'Urin verloren'};
 function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function fmtDate(s){return new Date(s+'T12:00').toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})}

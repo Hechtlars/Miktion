@@ -29,3 +29,9 @@ Die App ist als Dokumentationshilfe gedacht und stellt keine Diagnose. Die erste
 
 ## Datenschutz
 Die Einträge werden in dieser Version mit `localStorage` ausschließlich lokal im jeweiligen Browser gespeichert. Es gibt kein Backend und keinen Cloud-Upload durch die App.
+
+
+## Version 1.1
+- Startfehler der Eingabekacheln behoben.
+- Erste Kachel heißt jetzt Trinkmenge.
+- PWA-Cache aktualisiert.
