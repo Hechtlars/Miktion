@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f7f9fb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Blasentagebuch">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <title>Blasentagebuch</title>
+  <style>
+    :root{--bg:#f4f7fa;--card:#fff;--text:#17212b;--muted:#687684;--line:#dce3e9;--accent:#216a8c;--soft:#eaf4f8;--danger:#a43a3a}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    .app{max-width:720px;margin:auto;min-height:100vh;padding:calc(18px + env(safe-area-inset-top)) 16px calc(30px + env(safe-area-inset-bottom))}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    h1{font-size:27px;margin:0}.sub{color:var(--muted);font-size:14px}.gear{border:0;background:transparent;font-size:24px;padding:8px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 8px rgba(20,40,60,.04)}
+    .progress{display:flex;gap:7px;margin-top:10px}.dot{height:8px;flex:1;border-radius:9px;background:#dfe6eb}.dot.on{background:var(--accent)}
+    .actions{display:grid;gap:12px;margin:18px 0}.action{display:flex;align-items:center;gap:15px;width:100%;border:1px solid var(--line);background:#fff;border-radius:18px;padding:19px;text-align:left;font-size:18px;font-weight:650}.action span{font-size:29px}
+    button{cursor:pointer}.smallbtn{border:1px solid var(--line);background:white;border-radius:12px;padding:10px 12px;font-weight:600}
+    .primary{background:var(--accent);color:#fff;border:0}.danger{color:var(--danger)}
+    .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{text-align:center;background:var(--soft);padding:12px 5px;border-radius:13px}.metric b{display:block;font-size:19px}.metric small{color:var(--muted)}
+    .event{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}.event:first-child{border-top:0}.time{font-weight:700;min-width:48px}.eventmain{flex:1}.eventmain small{color:var(--muted)}
+    .modal{position:fixed;inset:0;background:rgba(15,28,38,.35);display:none;align-items:flex-end;justify-content:center;z-index:20}.modal.open{display:flex}.sheet{width:min(720px,100%);max-height:88vh;overflow:auto;background:white;border-radius:24px 24px 0 0;padding:18px 18px calc(24px + env(safe-area-inset-bottom))}
+    .sheet h2{margin:4px 0 16px}.field{margin:14px 0}.field label{display:block;font-weight:650;margin-bottom:7px}.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 13px}.chip.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+    input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font:inherit}.row{display:flex;gap:10px}.row>*{flex:1}.sheetfooter{display:flex;gap:10px;margin-top:18px}.sheetfooter button{flex:1;padding:13px;border-radius:13px;border:1px solid var(--line);font-weight:700}
+    .tabs{display:flex;gap:8px}.tabs button{flex:1}.hidden{display:none!important}.note{font-size:12px;color:var(--muted);line-height:1.4}.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#17212b;color:#fff;padding:10px 14px;border-radius:999px;display:none;z-index:50}
+    @media print{body{background:white}.app{max-width:none}.no-print,.actions,.gear{display:none!important}.card{box-shadow:none;break-inside:avoid}.printonly{display:block!important}}
+  </style>
+</head>
+<body>
+<div class="app">
+<header><div><h1>Blasentagebuch</h1><div class="sub" id="dateLabel"></div></div><button class="gear no-print" onclick="openSettings()">⚙️</button></header>
+
+<section class="card">
+  <b id="dayTitle">Tag 1 von 3</b><div class="progress" id="progress"></div>
+  <p class="sub" style="margin-bottom:0">Einträge dauern nur wenige Sekunden. Uhrzeit wird automatisch übernommen.</p>
+</section>
+
+<div class="actions no-print">
+ <button class="action" onclick="openEntry('drink')"><span>💧</span><div>Getrunken<div class="sub">Menge schnell eintragen</div></div></button>
+ <button class="action" onclick="openEntry('void')"><span>🚽</span><div>Wasser gelassen<div class="sub">Harnmenge & Harndrang</div></div></button>
+ <button class="action" onclick="openEntry('leak')"><span>💦</span><div>Urin verloren<div class="sub">Menge, Situation & Vorlage</div></div></button>
+</div>
+
+<section class="card">
+ <div style="display:flex;justify-content:space-between;align-items:center"><b>Heute</b><button class="smallbtn no-print" onclick="openSleep()">🌙 Schlaf</button></div>
+ <div class="summary" style="margin-top:12px">
+  <div class="metric"><b id="sumDrink">0 ml</b><small>getrunken</small></div>
+  <div class="metric"><b id="sumVoid">0×</b><small>Miktionen</small></div>
+  <div class="metric"><b id="sumLeak">0×</b><small>Urinverlust</small></div>
+ </div>
+</section>
+
+<section class="card">
+ <div style="display:flex;justify-content:space-between;align-items:center"><b>Tagesverlauf</b><button class="smallbtn no-print" onclick="changeDay()">Tag wählen</button></div>
+ <div id="events" style="margin-top:8px"></div>
+</section>
+
+<section class="card">
+ <b>Ärztliche Zusammenfassung</b>
+ <div id="doctorSummary" class="sub" style="margin-top:10px;line-height:1.55"></div>
+ <div class="row no-print" style="margin-top:14px"><button class="smallbtn primary" onclick="printReport()">PDF / Drucken</button><button class="smallbtn" onclick="exportData()">Sicherung</button></div>
+</section>
+
+<p class="note">Dieses digitale Blasentagebuch unterstützt die strukturierte Dokumentation. Es stellt keine Diagnose und ersetzt keine ärztliche Untersuchung. Die Daten werden ausschließlich lokal in diesem Browser gespeichert.</p>
+</div>
+
+<div class="modal" id="modal" onclick="backdrop(event)"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='blasentagebuch.v1';
+let db=JSON.parse(localStorage.getItem(KEY)||'{"start":"","entries":[],"sleep":{},"settings":{"days":3}}');
+if(!db.start){db.start=new Date().toISOString().slice(0,10);save()}
+let selectedDate=new Date().toISOString().slice(0,10);
+const labels={drink:'Getrunken',void:'Wasser gelassen',leak:'Urin verloren'};
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function fmtDate(s){return new Date(s+'T12:00').toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})}
+function dayIndex(d){return Math.floor((new Date(d+'T12:00')-new Date(db.start+'T12:00'))/86400000)+1}
+function render(){
+ document.getElementById('dateLabel').textContent=fmtDate(selectedDate);
+ let di=dayIndex(selectedDate); document.getElementById('dayTitle').textContent=`Tag ${di} von ${db.settings.days}`;
+ document.getElementById('progress').innerHTML=Array.from({length:db.settings.days},(_,i)=>`<div class="dot ${i<di?'on':''}"></div>`).join('');
+ let e=db.entries.filter(x=>x.date===selectedDate).sort((a,b)=>a.time.localeCompare(b.time));
+ document.getElementById('sumDrink').textContent=e.filter(x=>x.type==='drink').reduce((s,x)=>s+(+x.amount||0),0)+' ml';
+ document.getElementById('sumVoid').textContent=e.filter(x=>x.type==='void').length+'×';
+ document.getElementById('sumLeak').textContent=e.filter(x=>x.type==='leak').length+'×';
+ document.getElementById('events').innerHTML=e.length?e.map(x=>`<div class="event"><div class="time">${esc(x.time)}</div><div class="eventmain"><b>${labels[x.type]}</b><br><small>${detail(x)}</small></div><button class="smallbtn no-print danger" onclick="del('${x.id}')">Löschen</button></div>`).join(''):'<p class="sub">Noch keine Einträge für diesen Tag.</p>';
+ renderDoctor();
+}
+function detail(x){
+ if(x.type==='drink')return `${x.amount} ml${x.beverage?' · '+esc(x.beverage):''}`;
+ if(x.type==='void')return `${x.amount} ml · Harndrang: ${esc(x.urgency||'nicht angegeben')}`;
+ return `${esc(x.severity||'')} · ${esc(x.situation||'ohne Angabe')}${x.pad?' · Vorlage gewechselt':''}`;
+}
+function chips(name,vals){return `<div class="chips">${vals.map(v=>`<button type="button" class="chip" data-name="${name}" data-val="${v}" onclick="pick(this)">${v}</button>`).join('')}</div>`}
+function pick(el){document.querySelectorAll(`[data-name="${el.dataset.name}"]`).forEach(x=>x.classList.remove('sel'));el.classList.add('sel');let i=document.querySelector(`[name="${el.dataset.name}"]`);if(i)i.value=el.dataset.val}
+function now(){return new Date().toTimeString().slice(0,5)}
+function openEntry(type){
+ let body=`<h2>${labels[type]}</h2><div class="field"><label>Uhrzeit</label><input id="time" type="time" value="${now()}"></div>`;
+ if(type==='drink')body+=`<div class="field"><label>Trinkmenge</label>${chips('amount',[100,200,250,300,500])}<input name="amount" type="number" inputmode="numeric" placeholder="andere Menge in ml" style="margin-top:8px"></div><div class="field"><label>Getränk (optional)</label>${chips('beverage',['Wasser','Kaffee','Tee','Alkohol','Anderes'])}<input name="beverage" type="hidden"></div>`;
+ if(type==='void')body+=`<div class="field"><label>Harnmenge</label>${chips('amount',[50,100,150,200,250,300,400,500])}<input name="amount" type="number" inputmode="numeric" placeholder="andere Menge in ml" style="margin-top:8px"></div><div class="field"><label>Harndrang</label>${chips('urgency',['keiner','leicht','mittel','stark','kaum aufzuhalten'])}<input name="urgency" type="hidden"></div>`;
+ if(type==='leak')body+=`<div class="field"><label>Wie viel Urin?</label>${chips('severity',['wenig','mittel','viel'])}<input name="severity" type="hidden"></div><div class="field"><label>Situation</label>${chips('situation',['starker Harndrang','Husten/Niesen/Lachen','körperliche Belastung','ohne erkennbaren Auslöser','sonstiges'])}<input name="situation" type="hidden"></div><div class="field"><label><input id="pad" type="checkbox" style="width:auto"> Vorlage gewechselt</label></div>`;
+ body+=`<div class="sheetfooter"><button onclick="closeModal()">Abbrechen</button><button class="primary" onclick="add('${type}')">Speichern</button></div>`;
+ show(body)
+}
+function add(type){
+ let amount=document.querySelector('[name=amount]')?.value;
+ if((type==='drink'||type==='void')&&!amount){toast('Bitte Menge angeben');return}
+ let x={id:Date.now().toString(36),type,date:selectedDate,time:document.getElementById('time').value};
+ ['amount','beverage','urgency','severity','situation'].forEach(k=>{let n=document.querySelector(`[name=${k}]`);if(n)x[k]=n.value});
+ if(type==='leak')x.pad=document.getElementById('pad').checked;
+ db.entries.push(x);closeModal();save();toast('Gespeichert')
+}
+function del(id){if(confirm('Eintrag wirklich löschen?')){db.entries=db.entries.filter(x=>x.id!==id);save()}}
+function show(html){document.getElementById('sheet').innerHTML=html;document.getElementById('modal').classList.add('open')}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+function backdrop(e){if(e.target.id==='modal')closeModal()}
+function openSleep(){
+ let s=db.sleep[selectedDate]||{};
+ show(`<h2>Schlafzeit</h2><p class="sub">Für die medizinisch sinnvolle Zuordnung nächtlicher Miktionen.</p><div class="row"><div class="field"><label>Schlafen gegangen</label><input id="bed" type="time" value="${s.bed||'22:30'}"></div><div class="field"><label>Aufgestanden</label><input id="wake" type="time" value="${s.wake||'07:00'}"></div></div><div class="field"><label><input id="wet" type="checkbox" style="width:auto" ${s.wet?'checked':''}> Bett war nachts nass</label></div><div class="sheetfooter"><button onclick="closeModal()">Abbrechen</button><button class="primary" onclick="saveSleep()">Speichern</button></div>`)
+}
+function saveSleep(){db.sleep[selectedDate]={bed:bed.value,wake:wake.value,wet:wet.checked};closeModal();save()}
+function changeDay(){
+ let d=prompt('Datum wählen (JJJJ-MM-TT):',selectedDate); if(d&&/^\d{4}-\d{2}-\d{2}$/.test(d)){selectedDate=d;render()}
+}
+function renderDoctor(){
+ let days=[...new Set(db.entries.map(x=>x.date))].sort();
+ let entries=db.entries;
+ let drink=entries.filter(x=>x.type==='drink').reduce((s,x)=>s+(+x.amount||0),0);
+ let voids=entries.filter(x=>x.type==='void'), urine=voids.reduce((s,x)=>s+(+x.amount||0),0);
+ let leaks=entries.filter(x=>x.type==='leak'), pads=leaks.filter(x=>x.pad).length;
+ let strong=voids.filter(x=>['stark','kaum aufzuhalten'].includes(x.urgency)).length;
+ let max=voids.length?Math.max(...voids.map(x=>+x.amount||0)):0;
+ let n=Math.max(days.length,1);
+ document.getElementById('doctorSummary').innerHTML=`Dokumentierte Tage: <b>${days.length}</b><br>Ø Trinkmenge: <b>${Math.round(drink/n)} ml/Tag</b><br>Ø dokumentierte Harnmenge: <b>${Math.round(urine/n)} ml/Tag</b><br>Miktionen: <b>${voids.length}</b> (Ø ${(voids.length/n).toFixed(1)}/Tag)<br>Ø Miktionsvolumen: <b>${voids.length?Math.round(urine/voids.length):0} ml</b> · Maximum: <b>${max} ml</b><br>Starker/sehr starker Harndrang: <b>${strong}</b><br>Inkontinenzereignisse: <b>${leaks.length}</b> · Vorlagenwechsel: <b>${pads}</b>`;
+}
+function printReport(){window.print()}
+function exportData(){
+ let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='blasentagebuch-sicherung.json';a.click();URL.revokeObjectURL(a.href)
+}
+function openSettings(){
+ show(`<h2>Einstellungen</h2><div class="field"><label>Dokumentationsdauer</label><select id="days"><option value="3" ${db.settings.days==3?'selected':''}>3 Tage</option><option value="4" ${db.settings.days==4?'selected':''}>4 Tage</option><option value="7" ${db.settings.days==7?'selected':''}>7 Tage</option></select></div><div class="field"><label>Startdatum</label><input id="start" type="date" value="${db.start}"></div><div class="field"><label>Sicherung importieren</label><input id="importFile" type="file" accept=".json"></div><div class="sheetfooter"><button onclick="closeModal()">Abbrechen</button><button class="primary" onclick="saveSettings()">Speichern</button></div>`)
+}
+function saveSettings(){
+ db.settings.days=+days.value;db.start=start.value||db.start;
+ let f=importFile.files[0]; if(f){let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();closeModal()}catch(e){toast('Sicherung ungültig')}};r.readAsText(f);return}
+ closeModal();save()
+}
+function toast(t){let x=document.getElementById('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',1600)}
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js');
+render();
+</script>
+</body></html>
