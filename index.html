@@ -23,7 +23,7 @@
     .primary{background:var(--accent);color:#fff;border:0}.danger{color:var(--danger)}
     .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{text-align:center;background:var(--soft);padding:12px 5px;border-radius:13px}.metric b{display:block;font-size:19px}.metric small{color:var(--muted)}
     .event{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}.event:first-child{border-top:0}.time{font-weight:700;min-width:48px}.eventmain{flex:1}.eventmain small{color:var(--muted)}
-    .modal{position:fixed;inset:0;background:rgba(15,28,38,.35);display:none;align-items:flex-end;justify-content:center;z-index:20}.modal.open{display:flex}.sheet{width:min(720px,100%);max-height:88vh;overflow:auto;background:white;border-radius:24px 24px 0 0;padding:18px 18px calc(24px + env(safe-area-inset-bottom))}
+    .modal{position:fixed;inset:0;background:rgba(15,28,38,.35);display:none;align-items:flex-end;justify-content:center;z-index:20;overscroll-behavior:contain}.modal.open{display:flex}.sheet{width:min(720px,100%);max-height:88vh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:white;border-radius:24px 24px 0 0;padding:18px 18px calc(24px + env(safe-area-inset-bottom))}body.modal-open{overflow:hidden;position:fixed;width:100%}.urgency-scale{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:8px}.urgency-step{position:relative;border:0;background:transparent;padding:34px 2px 4px;font-size:11px;color:var(--muted);min-width:0}.urgency-step:before{content:'';position:absolute;top:14px;left:0;right:0;height:4px;background:var(--line)}.urgency-step:first-child:before{left:50%}.urgency-step:last-child:before{right:50%}.urgency-step:after{content:'';position:absolute;top:7px;left:50%;width:18px;height:18px;transform:translateX(-50%);border-radius:50%;background:white;border:3px solid #9aa7b2}.urgency-step.sel{color:var(--text);font-weight:700}.urgency-step.sel:after{background:var(--accent);border-color:var(--accent)}.sleep-row{display:flex;justify-content:space-between;gap:12px;align-items:center;border-top:1px solid var(--line);margin-top:12px;padding-top:12px}.sleep-row .sub{line-height:1.35}
     .sheet h2{margin:4px 0 16px}.field{margin:14px 0}.field label{display:block;font-weight:650;margin-bottom:7px}.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 13px}.chip.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
     input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font:inherit}.row{display:flex;gap:10px}.row>*{flex:1}.sheetfooter{display:flex;gap:10px;margin-top:18px}.sheetfooter button{flex:1;padding:13px;border-radius:13px;border:1px solid var(--line);font-weight:700}
     .tabs{display:flex;gap:8px}.tabs button{flex:1}.hidden{display:none!important}.note{font-size:12px;color:var(--muted);line-height:1.4}.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#17212b;color:#fff;padding:10px 14px;border-radius:999px;display:none;z-index:50}
@@ -46,12 +46,12 @@
 </div>
 
 <section class="card">
- <div style="display:flex;justify-content:space-between;align-items:center"><b>Heute</b><button class="smallbtn no-print" onclick="openSleep()">🌙 Schlaf</button></div>
+ <div style="display:flex;justify-content:space-between;align-items:center"><b>Heute</b></div>
  <div class="summary" style="margin-top:12px">
   <div class="metric"><b id="sumDrink">0 ml</b><small>getrunken</small></div>
   <div class="metric"><b id="sumVoid">0×</b><small>Miktionen</small></div>
   <div class="metric"><b id="sumLeak">0×</b><small>Urinverlust</small></div>
- </div>
+ </div><div class="sleep-row"><div><b>Nachtruhe</b><div class="sub" id="sleepSummary">Noch nicht eingetragen</div></div><button class="smallbtn no-print" onclick="openSleep()">Eintragen</button></div>
 </section>
 
 <section class="card">
@@ -89,6 +89,7 @@ function render(){
  document.getElementById('sumDrink').textContent=e.filter(x=>x.type==='drink').reduce((s,x)=>s+(+x.amount||0),0)+' ml';
  document.getElementById('sumVoid').textContent=e.filter(x=>x.type==='void').length+'×';
  document.getElementById('sumLeak').textContent=e.filter(x=>x.type==='leak').length+'×';
+ let sl=db.sleep[selectedDate]; document.getElementById('sleepSummary').textContent=sl&&sl.bed&&sl.wake?`${sl.bed} – ${sl.wake}`:'Noch nicht eingetragen';
  document.getElementById('events').innerHTML=e.length?e.map(x=>`<div class="event"><div class="time">${esc(x.time)}</div><div class="eventmain"><b>${labels[x.type]}</b><br><small>${detail(x)}</small></div><button class="smallbtn no-print danger" onclick="del('${x.id}')">Löschen</button></div>`).join(''):'<p class="sub">Noch keine Einträge für diesen Tag.</p>';
  renderDoctor();
 }
@@ -100,10 +101,14 @@ function detail(x){
 function chips(name,vals){return `<div class="chips">${vals.map(v=>`<button type="button" class="chip" data-name="${name}" data-val="${v}" onclick="pick(this)">${v}</button>`).join('')}</div>`}
 function pick(el){document.querySelectorAll(`[data-name="${el.dataset.name}"]`).forEach(x=>x.classList.remove('sel'));el.classList.add('sel');let i=document.querySelector(`[name="${el.dataset.name}"]`);if(i)i.value=el.dataset.val}
 function now(){return new Date().toTimeString().slice(0,5)}
+function amountChoices(){return `<div class="chips"><button type="button" class="chip" onclick="setAmount(this,150)">☕ 1 Tasse · ca. 150 ml</button><button type="button" class="chip" onclick="setAmount(this,200)">🥛 1 Glas · ca. 200 ml</button><button type="button" class="chip" onclick="setAmount(this,300)">🥛 1 großes Glas · ca. 300 ml</button></div><div class="sub" style="margin:12px 0 7px">Oder Menge in ml</div>${chips('amount',[100,150,200,250,300,500])}<input name="amount" type="number" inputmode="numeric" min="1" placeholder="andere Menge in ml" style="margin-top:8px">`}
+function setAmount(el,val){document.querySelectorAll('[data-name="amount"],.field .chips .chip').forEach(x=>{if(x.closest('.field')===el.closest('.field'))x.classList.remove('sel')});el.classList.add('sel');document.querySelector('[name="amount"]').value=val}
+function urgencyScale(){let vals=['keiner','leicht','mittel','stark','kaum aufzuhalten'];return `<div class="urgency-scale">${vals.map(v=>`<button type="button" class="urgency-step" data-val="${v}" onclick="pickUrgency(this)">${v}</button>`).join('')}</div><input name="urgency" type="hidden">`}
+function pickUrgency(el){document.querySelectorAll('.urgency-step').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');document.querySelector('[name="urgency"]').value=el.dataset.val}
 function openEntry(type){
  let body=`<h2>${labels[type]}</h2><div class="field"><label>Uhrzeit</label><input id="time" type="time" value="${now()}"></div>`;
- if(type==='drink')body+=`<div class="field"><label>Trinkmenge</label>${chips('amount',[100,200,250,300,500])}<input name="amount" type="number" inputmode="numeric" placeholder="andere Menge in ml" style="margin-top:8px"></div><div class="field"><label>Getränk (optional)</label>${chips('beverage',['Wasser','Kaffee','Tee','Alkohol','Anderes'])}<input name="beverage" type="hidden"></div>`;
- if(type==='void')body+=`<div class="field"><label>Harnmenge</label>${chips('amount',[50,100,150,200,250,300,400,500])}<input name="amount" type="number" inputmode="numeric" placeholder="andere Menge in ml" style="margin-top:8px"></div><div class="field"><label>Harndrang</label>${chips('urgency',['keiner','leicht','mittel','stark','kaum aufzuhalten'])}<input name="urgency" type="hidden"></div>`;
+ if(type==='drink')body+=`<div class="field"><label>Trinkmenge</label>${amountChoices()}</div><div class="field"><label>Getränk (optional)</label>${chips('beverage',['Wasser','Saftschorle','Kaffee','Tee','Alkohol','Anderes'])}<input name="beverage" type="hidden"></div>`;
+ if(type==='void')body+=`<div class="field"><label>Harnmenge</label>${chips('amount',[50,100,150,200,250,300,400,500])}<input name="amount" type="number" inputmode="numeric" min="1" placeholder="andere Menge in ml" style="margin-top:8px"></div><div class="field"><label>Harndrang</label><div class="sub">Bitte auf der Skala auswählen</div>${urgencyScale()}</div>`;
  if(type==='leak')body+=`<div class="field"><label>Wie viel Urin?</label>${chips('severity',['wenig','mittel','viel'])}<input name="severity" type="hidden"></div><div class="field"><label>Situation</label>${chips('situation',['starker Harndrang','Husten/Niesen/Lachen','körperliche Belastung','ohne erkennbaren Auslöser','sonstiges'])}<input name="situation" type="hidden"></div><div class="field"><label><input id="pad" type="checkbox" style="width:auto"> Vorlage gewechselt</label></div>`;
  body+=`<div class="sheetfooter"><button onclick="closeModal()">Abbrechen</button><button class="primary" onclick="add('${type}')">Speichern</button></div>`;
  show(body)
@@ -117,14 +122,15 @@ function add(type){
  db.entries.push(x);closeModal();save();toast('Gespeichert')
 }
 function del(id){if(confirm('Eintrag wirklich löschen?')){db.entries=db.entries.filter(x=>x.id!==id);save()}}
-function show(html){document.getElementById('sheet').innerHTML=html;document.getElementById('modal').classList.add('open')}
-function closeModal(){document.getElementById('modal').classList.remove('open')}
+let lockedScrollY=0;
+function show(html){lockedScrollY=window.scrollY;document.getElementById('sheet').innerHTML=html;document.getElementById('modal').classList.add('open');document.body.classList.add('modal-open');document.body.style.top=`-${lockedScrollY}px`}
+function closeModal(){document.getElementById('modal').classList.remove('open');document.body.classList.remove('modal-open');document.body.style.top='';window.scrollTo(0,lockedScrollY)}
 function backdrop(e){if(e.target.id==='modal')closeModal()}
 function openSleep(){
- let s=db.sleep[selectedDate]||{};
- show(`<h2>Schlafzeit</h2><p class="sub">Für die medizinisch sinnvolle Zuordnung nächtlicher Miktionen.</p><div class="row"><div class="field"><label>Schlafen gegangen</label><input id="bed" type="time" value="${s.bed||'22:30'}"></div><div class="field"><label>Aufgestanden</label><input id="wake" type="time" value="${s.wake||'07:00'}"></div></div><div class="field"><label><input id="wet" type="checkbox" style="width:auto" ${s.wet?'checked':''}> Bett war nachts nass</label></div><div class="sheetfooter"><button onclick="closeModal()">Abbrechen</button><button class="primary" onclick="saveSleep()">Speichern</button></div>`)
+ let sl=db.sleep[selectedDate]||{};
+ show(`<h2>Nachtruhe</h2><p class="sub">Die Zeiten helfen, nächtliche Toilettengänge und die nächtliche Urinmenge korrekt auszuwerten.</p><div class="row"><div class="field"><label>Zu Bett gegangen</label><input id="bed" type="time" value="${sl.bed||'22:30'}"></div><div class="field"><label>Aufgestanden</label><input id="wake" type="time" value="${sl.wake||'07:00'}"></div></div><div class="sheetfooter"><button onclick="closeModal()">Abbrechen</button><button class="primary" onclick="saveSleep()">Speichern</button></div>`)
 }
-function saveSleep(){db.sleep[selectedDate]={bed:bed.value,wake:wake.value,wet:wet.checked};closeModal();save()}
+function saveSleep(){const bedEl=document.getElementById('bed'),wakeEl=document.getElementById('wake');db.sleep[selectedDate]={bed:bedEl.value,wake:wakeEl.value};closeModal();save();toast('Nachtruhe gespeichert')}
 function changeDay(){
  let d=prompt('Datum wählen (JJJJ-MM-TT):',selectedDate); if(d&&/^\d{4}-\d{2}-\d{2}$/.test(d)){selectedDate=d;render()}
 }

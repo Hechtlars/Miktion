@@ -35,3 +35,11 @@ Die Einträge werden in dieser Version mit `localStorage` ausschließlich lokal 
 - Startfehler der Eingabekacheln behoben.
 - Erste Kachel heißt jetzt Trinkmenge.
 - PWA-Cache aktualisiert.
+
+## Version 1.2
+- Trinkgefäße als alltagstaugliche Schnellwahl: Tasse, Glas, großes Glas mit ca.-ml-Angaben; ml-Auswahl bleibt erhalten.
+- Saftschorle ergänzt.
+- Hintergrund wird bei geöffneten Eingabefenstern fixiert; nur das Eingabefenster scrollt.
+- Harndrang als horizontale visuelle 5-Stufen-Skala.
+- Nachtruhe kompakt in der Tagesübersicht; kein separater Nacht-Reiter.
+- Pädiatrische Frage „Bett war nachts nass“ aus der Erwachsenen-Version entfernt.
