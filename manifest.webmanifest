@@ -1,7 +1,7 @@
 {
-  "name": "Blasentagebuch",
-  "short_name": "Blase",
-  "description": "Patientenfreundliches digitales Blasentagebuch",
+  "name": "Miktion",
+  "short_name": "Miktion",
+  "description": "Patientenfreundliches digitales Miktionstagebuch",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

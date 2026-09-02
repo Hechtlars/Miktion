@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#f7f9fb">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Blasentagebuch">
+  <meta name="apple-mobile-web-app-title" content="Miktion">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <title>Blasentagebuch</title>
+  <title>Miktion</title>
   <style>
     :root{--bg:#f4f7fa;--card:#fff;--text:#17212b;--muted:#687684;--line:#dce3e9;--accent:#216a8c;--soft:#eaf4f8;--danger:#a43a3a}
     *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
@@ -32,7 +32,7 @@
 </head>
 <body>
 <div class="app">
-<header><div><h1>Blasentagebuch</h1><div class="sub" id="dateLabel"></div></div><button class="gear no-print" onclick="openSettings()">⚙️</button></header>
+<header><div><h1>Miktionstagebuch</h1><div class="sub" id="dateLabel"></div></div><button class="gear no-print" onclick="openSettings()">⚙️</button></header>
 
 <section class="card">
   <b id="dayTitle">Tag 1 von 3</b><div class="progress" id="progress"></div>
@@ -40,8 +40,8 @@
 </section>
 
 <div class="actions no-print">
- <button class="action" onclick="openEntry('drink')"><span>💧</span><div>Trinkmenge<div class="sub">Menge schnell eintragen</div></div></button>
- <button class="action" onclick="openEntry('void')"><span>🚽</span><div>Wasser gelassen<div class="sub">Harnmenge & Harndrang</div></div></button>
+ <button class="action" onclick="openEntry('drink')"><span>💧</span><div>Trinkmenge</div></button>
+ <button class="action" onclick="openEntry('void')"><span>🚽</span><div>Wasser gelassen<div class="sub">Menge & Drang</div></div></button>
  <button class="action" onclick="openEntry('leak')"><span>💦</span><div>Urin verloren<div class="sub">Menge, Situation & Vorlage</div></div></button>
 </div>
 
