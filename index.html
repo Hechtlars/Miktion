@@ -13,7 +13,7 @@
   <style>
     :root{--bg:#f4f7fa;--card:#fff;--text:#17212b;--muted:#687684;--line:#dce3e9;--accent:#216a8c;--soft:#eaf4f8;--danger:#a43a3a}
     *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-    .app{max-width:720px;margin:auto;min-height:100vh;padding:calc(18px + env(safe-area-inset-top)) 16px calc(30px + env(safe-area-inset-bottom))}
+    .app{max-width:720px;margin:auto;min-height:100vh;padding:calc(18px + env(safe-area-inset-top)) 16px calc(92px + env(safe-area-inset-bottom))}
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
     h1{font-size:27px;margin:0}.sub{color:var(--muted);font-size:14px}.gear{border:0;background:transparent;font-size:24px;padding:8px}
     .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 8px rgba(20,40,60,.04)}
@@ -28,13 +28,13 @@
     input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font:inherit}.row{display:flex;gap:10px}.row>*{flex:1}.sheetfooter{display:flex;gap:10px;margin-top:18px}.sheetfooter button{flex:1;padding:13px;border-radius:13px;border:1px solid var(--line);font-weight:700}
     .tabs{display:flex;gap:8px}.tabs button{flex:1}.hidden{display:none!important}.note{font-size:12px;color:var(--muted);line-height:1.4}.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#17212b;color:#fff;padding:10px 14px;border-radius:999px;display:none;z-index:50}
     @media print{body{background:white}.app{max-width:none}.no-print,.actions,.gear{display:none!important}.card{box-shadow:none;break-inside:avoid}.printonly{display:block!important}}
-  </style>
+  .bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:15;background:#fff;border-top:1px solid var(--line);padding:7px 10px calc(7px + env(safe-area-inset-bottom));display:flex;justify-content:center}.bottomnav>div{width:min(720px,100%);display:grid;grid-template-columns:repeat(3,1fr)}.navbtn{border:0;background:transparent;color:var(--muted);padding:6px;font-size:11px;font-weight:650}.navbtn span{display:block;font-size:21px}.navbtn.active{color:var(--accent)}.view{display:none}.view.active{display:block}.kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px}.kpi{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}.kpi small{color:var(--muted);display:block}.kpi b{font-size:21px}.chartbox{border:1px solid var(--line);border-radius:16px;background:#fff;padding:14px;margin:12px 0}.bars{height:145px;display:flex;align-items:flex-end;gap:12px;border-bottom:1px solid var(--line);padding:8px}.bargrp{flex:1;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:4px}.bar{width:28%;background:#91b8c9;border-radius:5px 5px 0 0}.bar.alt{background:#4e8097}.barlabels{display:flex;gap:12px;padding:4px 8px}.barlabels span{flex:1;text-align:center;font-size:11px;color:var(--muted)}.preview{background:#eef1f4;border-radius:15px;padding:12px}.paper{background:white;padding:18px;border-radius:4px;box-shadow:0 2px 8px #0002;font-size:12px}.paper table{width:100%;border-collapse:collapse}.paper th,.paper td{padding:5px;border-bottom:1px solid #ddd;text-align:left}</style>
 </head>
 <body>
 <div class="app">
 <header><div><h1>Miktionstagebuch</h1><div class="sub" id="dateLabel"></div></div><button class="gear no-print" onclick="openSettings()">⚙️</button></header>
 
-<section class="card">
+<div id="todayView" class="view active"><section class="card">
   <b id="dayTitle">Tag 1 von 3</b><div class="progress" id="progress"></div>
   <p class="sub" style="margin-bottom:0">Einträge dauern nur wenige Sekunden. Uhrzeit wird automatisch übernommen.</p>
 </section>
@@ -50,7 +50,7 @@
  <div class="summary" style="margin-top:12px">
   <div class="metric"><b id="sumDrink">0 ml</b><small>getrunken</small></div>
   <div class="metric"><b id="sumVoid">0×</b><small>Miktionen</small></div>
-  <div class="metric"><b id="sumLeak">0×</b><small>Urinverlust</small></div>
+  <div class="metric"><b id="sumLeak">0×</b><small>Urinverlust</small></div><div class="metric"><b id="sumPads">0×</b><small>Vorlagenwechsel</small></div>
  </div><div class="sleep-row"><div><b>Nachtruhe</b><div class="sub" id="sleepSummary">Noch nicht eingetragen</div></div><button class="smallbtn no-print" onclick="openSleep()">Eintragen</button></div>
 </section>
 
@@ -59,14 +59,10 @@
  <div id="events" style="margin-top:8px"></div>
 </section>
 
-<section class="card">
- <b>Ärztliche Zusammenfassung</b>
- <div id="doctorSummary" class="sub" style="margin-top:10px;line-height:1.55"></div>
- <div class="row no-print" style="margin-top:14px"><button class="smallbtn primary" onclick="printReport()">PDF / Drucken</button><button class="smallbtn" onclick="exportData()">Sicherung</button></div>
-</section>
+
 
 <p class="note">Dieses digitale Blasentagebuch unterstützt die strukturierte Dokumentation. Es stellt keine Diagnose und ersetzt keine ärztliche Untersuchung. Die Daten werden ausschließlich lokal in diesem Browser gespeichert.</p>
-</div>
+</div><div id="overviewView" class="view"><section class="card"><b>Übersicht</b><p class="sub">Dokumentierte Tage im Überblick.</p><div id="dayOverview"></div></section></div><div id="analysisView" class="view"><section class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>Ärztliche Auswertung</b><div class="sub" id="analysisDays"></div></div><button class="smallbtn primary" onclick="reportPreview()">Arztbericht</button></div></section><div class="kpis" id="analysisKpis"></div><div class="chartbox"><b>Trinkmenge vs. Harnmenge</b><div class="bars" id="volumeBars"></div><div class="barlabels" id="volumeLabels"></div><div class="sub">Hell: Trinkmenge · Dunkel: Harnmenge</div></div><div class="chartbox"><b>Miktionen pro Tag</b><div class="bars" id="voidBars"></div><div class="barlabels" id="voidLabels"></div></div><section class="card"><b>Weitere Parameter</b><div class="sub" id="analysisDetails" style="line-height:1.7;margin-top:8px"></div></section></div></div><nav class="bottomnav no-print"><div><button class="navbtn active" data-view="today" onclick="showView('today')"><span>⌂</span>Heute</button><button class="navbtn" data-view="overview" onclick="showView('overview')"><span>▤</span>Übersicht</button><button class="navbtn" data-view="analysis" onclick="showView('analysis')"><span>▥</span>Auswertung</button></div></nav>
 
 <div class="modal" id="modal" onclick="backdrop(event)"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
@@ -88,7 +84,7 @@ function render(){
  let e=db.entries.filter(x=>x.date===selectedDate).sort((a,b)=>a.time.localeCompare(b.time));
  document.getElementById('sumDrink').textContent=e.filter(x=>x.type==='drink').reduce((s,x)=>s+(+x.amount||0),0)+' ml';
  document.getElementById('sumVoid').textContent=e.filter(x=>x.type==='void').length+'×';
- document.getElementById('sumLeak').textContent=e.filter(x=>x.type==='leak').length+'×';
+ document.getElementById('sumLeak').textContent=e.filter(x=>x.type==='leak').length+'×'; document.getElementById('sumPads').textContent=e.filter(x=>x.type==='leak'&&x.pad).length+'×';
  let sl=db.sleep[selectedDate]; document.getElementById('sleepSummary').textContent=sl&&sl.bed&&sl.wake?`${sl.bed} – ${sl.wake}`:'Noch nicht eingetragen';
  document.getElementById('events').innerHTML=e.length?e.map(x=>`<div class="event"><div class="time">${esc(x.time)}</div><div class="eventmain"><b>${labels[x.type]}</b><br><small>${detail(x)}</small></div><button class="smallbtn no-print danger" onclick="del('${x.id}')">Löschen</button></div>`).join(''):'<p class="sub">Noch keine Einträge für diesen Tag.</p>';
  renderDoctor();
@@ -134,18 +130,13 @@ function saveSleep(){const bedEl=document.getElementById('bed'),wakeEl=document.
 function changeDay(){
  let d=prompt('Datum wählen (JJJJ-MM-TT):',selectedDate); if(d&&/^\d{4}-\d{2}-\d{2}$/.test(d)){selectedDate=d;render()}
 }
-function renderDoctor(){
- let days=[...new Set(db.entries.map(x=>x.date))].sort();
- let entries=db.entries;
- let drink=entries.filter(x=>x.type==='drink').reduce((s,x)=>s+(+x.amount||0),0);
- let voids=entries.filter(x=>x.type==='void'), urine=voids.reduce((s,x)=>s+(+x.amount||0),0);
- let leaks=entries.filter(x=>x.type==='leak'), pads=leaks.filter(x=>x.pad).length;
- let strong=voids.filter(x=>['stark','kaum aufzuhalten'].includes(x.urgency)).length;
- let max=voids.length?Math.max(...voids.map(x=>+x.amount||0)):0;
- let n=Math.max(days.length,1);
- document.getElementById('doctorSummary').innerHTML=`Dokumentierte Tage: <b>${days.length}</b><br>Ø Trinkmenge: <b>${Math.round(drink/n)} ml/Tag</b><br>Ø dokumentierte Harnmenge: <b>${Math.round(urine/n)} ml/Tag</b><br>Miktionen: <b>${voids.length}</b> (Ø ${(voids.length/n).toFixed(1)}/Tag)<br>Ø Miktionsvolumen: <b>${voids.length?Math.round(urine/voids.length):0} ml</b> · Maximum: <b>${max} ml</b><br>Starker/sehr starker Harndrang: <b>${strong}</b><br>Inkontinenzereignisse: <b>${leaks.length}</b> · Vorlagenwechsel: <b>${pads}</b>`;
-}
-function printReport(){window.print()}
+function allDays(){return [...new Set(db.entries.map(x=>x.date))].sort()}
+function stats(){let days=allDays(),n=Math.max(days.length,1),drink=0,urine=0,vc=0,leaks=0,pads=0,strong=0,max=0;db.entries.forEach(x=>{if(x.type==='drink')drink+=+x.amount||0;if(x.type==='void'){urine+=+x.amount||0;vc++;max=Math.max(max,+x.amount||0);if(['stark','kaum aufzuhalten'].includes(x.urgency))strong++}if(x.type==='leak'){leaks++;if(x.pad)pads++}});return{days,n,drink,urine,vc,leaks,pads,strong,max}}
+function renderDoctor(){let a=stats(),k=[['Ø Trinkmenge',Math.round(a.drink/a.n)+' ml/Tag'],['Ø Miktionen',(a.vc/a.n).toFixed(1)+'/Tag'],['Ø Miktionsvolumen',a.vc?Math.round(a.urine/a.vc)+' ml':'0 ml'],['Max. Miktionsvolumen',a.max+' ml'],['Urinverlust',a.leaks+'×'],['Vorlagenwechsel',a.pads+'×']];document.getElementById('analysisDays').textContent=a.days.length+' dokumentierte Tage';document.getElementById('analysisKpis').innerHTML=k.map(x=>`<div class="kpi"><small>${x[0]}</small><b>${x[1]}</b></div>`).join('');document.getElementById('analysisDetails').innerHTML=`Starker/sehr starker Harndrang: <b>${a.strong}</b><br>Harnmenge gesamt: <b>${a.urine} ml</b><br>Trinkmenge gesamt: <b>${a.drink} ml</b>`;let v=a.days.map(d=>{let e=db.entries.filter(x=>x.date===d),dr=e.filter(x=>x.type==='drink').reduce((q,x)=>q+(+x.amount||0),0),ur=e.filter(x=>x.type==='void').reduce((q,x)=>q+(+x.amount||0),0),vc=e.filter(x=>x.type==='void').length;return{d,dr,ur,vc}}),mv=Math.max(1,...v.flatMap(x=>[x.dr,x.ur])),mc=Math.max(1,...v.map(x=>x.vc));document.getElementById('volumeBars').innerHTML=v.map(x=>`<div class="bargrp"><div class="bar" style="height:${Math.max(2,x.dr/mv*100)}%"></div><div class="bar alt" style="height:${Math.max(2,x.ur/mv*100)}%"></div></div>`).join('')||'<span class="sub">Noch keine Daten.</span>';document.getElementById('volumeLabels').innerHTML=v.map((x,i)=>`<span>Tag ${i+1}</span>`).join('');document.getElementById('voidBars').innerHTML=v.map(x=>`<div class="bargrp"><div class="bar alt" style="width:32%;height:${Math.max(2,x.vc/mc*100)}%"></div></div>`).join('')||'<span class="sub">Noch keine Daten.</span>';document.getElementById('voidLabels').innerHTML=v.map((x,i)=>`<span>Tag ${i+1}</span>`).join('');document.getElementById('dayOverview').innerHTML=v.map(x=>{let e=db.entries.filter(y=>y.date===x.d),le=e.filter(y=>y.type==='leak').length,pa=e.filter(y=>y.type==='leak'&&y.pad).length;return `<div class="event"><div class="eventmain"><b>${fmtDate(x.d)}</b><br><small>💧 ${x.dr} ml · 🚽 ${x.vc}× · 💦 ${le}× · Vorlagen ${pa}×</small></div><button class="smallbtn" onclick="selectedDate='${x.d}';showView('today');render()">Öffnen</button></div>`}).join('')||'<p class="sub">Noch keine Daten.</p>'}
+function showView(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));document.getElementById(v+'View').classList.add('active');document.querySelector(`[data-view="${v}"]`).classList.add('active');document.querySelector('h1').textContent=v==='today'?'Miktionstagebuch':v==='overview'?'Übersicht':'Auswertung';window.scrollTo(0,0)}
+function reportPreview(){let a=stats(),rows=a.days.map(d=>{let e=db.entries.filter(x=>x.date===d),dr=e.filter(x=>x.type==='drink').reduce((q,x)=>q+(+x.amount||0),0),vs=e.filter(x=>x.type==='void'),ur=vs.reduce((q,x)=>q+(+x.amount||0),0),le=e.filter(x=>x.type==='leak').length,pa=e.filter(x=>x.type==='leak'&&x.pad).length;return `<tr><td>${fmtDate(d)}</td><td>${dr} ml</td><td>${vs.length}</td><td>${ur} ml</td><td>${le}</td><td>${pa}</td></tr>`}).join('');let rep=`<h2>Miktionstagebuch</h2><p>${a.days.length} dokumentierte Tage</p><p><b>Ø Trinkmenge:</b> ${Math.round(a.drink/a.n)} ml/Tag · <b>Ø Miktionen:</b> ${(a.vc/a.n).toFixed(1)}/Tag · <b>Ø Miktionsvolumen:</b> ${a.vc?Math.round(a.urine/a.vc):0} ml</p><table><tr><th>Tag</th><th>Trinken</th><th>Miktionen</th><th>Harnmenge</th><th>Urinverlust</th><th>Vorlagen</th></tr>${rows}</table><p>Starker/sehr starker Harndrang: ${a.strong} · Maximum: ${a.max} ml</p>`;show(`<h2>PDF-Vorschau</h2><div class="preview"><div class="paper">${rep}</div></div><p class="note">Beim Versand per normaler E-Mail können Gesundheitsdaten unverschlüsselt übertragen werden.</p><div class="sheetfooter"><button onclick="closeModal()">Zurück</button><button onclick="emailReport()">Per E-Mail</button><button class="primary" onclick="window.print()">PDF speichern / teilen</button></div>`)}
+function emailReport(){location.href='mailto:?subject='+encodeURIComponent('Miktionstagebuch')+'&body='+encodeURIComponent('Guten Tag,\n\nich möchte Ihnen mein Miktionstagebuch übermitteln. Bitte fügen Sie die gespeicherte PDF-Datei in Ihrer Mail-App als Anhang hinzu.')}
+function printReport(){reportPreview()}
 function exportData(){
  let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='blasentagebuch-sicherung.json';a.click();URL.revokeObjectURL(a.href)
 }
