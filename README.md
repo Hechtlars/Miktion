@@ -1,3 +1,12 @@
-# Miktion – Version 2.0
+# Miktion – Version 2.1
 
-Neue Navigation, Tagesübersicht mit Vorlagenwechsel, ärztliche Auswertung mit Diagrammen sowie Arztbericht-Vorschau und E-Mail-Vorbereitung. Bestehende lokale V1-Daten bleiben kompatibel.
+Gebündelte Überarbeitung.
+
+- Startdatum-Feld auf einheitliche Breite korrigiert
+- Abschlussmeldung nach gewählter Dokumentationsdauer statt „Tag 4 von 3“
+- professionelleres Design mit konsistenten SVG-Line-Icons statt Emojis
+- neue 5er-Navigation mit zentralem Schnelleingabe-Button
+- Ø Urinverlust und Ø Vorlagenwechsel in der Auswertung
+- responsive PDF-Vorschau für schmale Displays
+- Datum wird nur noch in „Heute“ angezeigt
+- bestehende lokale Daten bleiben kompatibel
