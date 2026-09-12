@@ -1,12 +1,12 @@
-# Miktion – Version 2.1
+# Miktion – Version 2.3
 
-Gebündelte Überarbeitung.
+Startseite deutlich reduziert:
+- Tagesstatistik von „Heute“ entfernt
+- Tagesverlauf von „Heute“ entfernt
+- Tageswerte und Einträge bleiben in „Übersicht“
+- Nachtruhe als kompakte, antippbare Zeile
+- permanenter Hinweistext von der Startseite entfernt
+- Hauptfokus der Startseite: Fortschritt und schnelle Dokumentation
+- bestehende Funktionen aus Version 2.2 einschließlich „Tagebuch zurücksetzen“ bleiben erhalten
 
-- Startdatum-Feld auf einheitliche Breite korrigiert
-- Abschlussmeldung nach gewählter Dokumentationsdauer statt „Tag 4 von 3“
-- professionelleres Design mit konsistenten SVG-Line-Icons statt Emojis
-- neue 5er-Navigation mit zentralem Schnelleingabe-Button
-- Ø Urinverlust und Ø Vorlagenwechsel in der Auswertung
-- responsive PDF-Vorschau für schmale Displays
-- Datum wird nur noch in „Heute“ angezeigt
-- bestehende lokale Daten bleiben kompatibel
+Miktion ist eine Dokumentationshilfe und stellt keine Diagnose.
