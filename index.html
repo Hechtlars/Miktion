@@ -30,31 +30,39 @@
     @media print{body{background:white}.app{max-width:none}.no-print,.actions,.gear{display:none!important}.card{box-shadow:none;break-inside:avoid}.printonly{display:block!important}}
   .bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:15;background:#fff;border-top:1px solid var(--line);padding:7px 10px calc(7px + env(safe-area-inset-bottom));display:flex;justify-content:center}.bottomnav>div{width:min(720px,100%);display:grid;grid-template-columns:repeat(3,1fr)}.navbtn{border:0;background:transparent;color:var(--muted);padding:6px;font-size:11px;font-weight:650}.navbtn span{display:block;font-size:21px}.navbtn.active{color:var(--accent)}.view{display:none}.view.active{display:block}.kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px}.kpi{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}.kpi small{color:var(--muted);display:block}.kpi b{font-size:21px}.chartbox{border:1px solid var(--line);border-radius:16px;background:#fff;padding:14px;margin:12px 0}.bars{height:145px;display:flex;align-items:flex-end;gap:12px;border-bottom:1px solid var(--line);padding:8px}.bargrp{flex:1;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:4px}.bar{width:28%;background:#91b8c9;border-radius:5px 5px 0 0}.bar.alt{background:#4e8097}.barlabels{display:flex;gap:12px;padding:4px 8px}.barlabels span{flex:1;text-align:center;font-size:11px;color:var(--muted)}.preview{background:#eef1f4;border-radius:15px;padding:12px}.paper{background:white;padding:18px;border-radius:4px;box-shadow:0 2px 8px #0002;font-size:12px}.paper table{width:100%;border-collapse:collapse}.paper th,.paper td{padding:5px;border-bottom:1px solid #ddd;text-align:left}.compact-sleep{padding:0;overflow:hidden}.sleep-link{width:100%;border:0;background:transparent;padding:14px 16px;display:flex;align-items:center;gap:12px;text-align:left;color:inherit}.sleep-link>span:nth-child(2){flex:1}.sleep-link small{display:block;color:var(--muted);margin-top:2px}.sleep-icon{width:34px;height:34px;display:grid;place-items:center;color:var(--accent)}.sleep-icon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.chev{font-size:25px;color:var(--muted)}
 .resetlead{font-size:17px;line-height:1.45}.backupbtn{width:100%;background:#fff!important;border:1.5px solid var(--accent)!important;color:var(--accent)!important;font-weight:650}.resetactions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.resetactions button{min-height:52px;font-size:16px;font-weight:650}.resetdanger{background:#fff5f5!important;border:1.5px solid #b33a3a!important;color:#a72f2f!important}@media(max-width:380px){.resetactions{grid-template-columns:1fr}.resetactions button{width:100%}}
+.today-progress{padding:6px 2px 18px}.today-progress-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}.today-progress-head b{display:block;font-size:21px;letter-spacing:-.25px;margin-top:3px}.eyebrow{font-size:11px;font-weight:750;letter-spacing:.08em;color:var(--muted)}.status-pill{font-size:12px;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,white);border-radius:999px;padding:5px 9px}.today-progress .progress{margin-top:12px}.entry-section{margin-top:2px}.section-title{font-size:14px;font-weight:750;margin:0 2px 9px;color:#35424a}.entry-list,.sleep-section{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}.entry-row{width:100%;min-height:72px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:#fff;padding:13px 15px;display:flex;align-items:center;gap:13px;text-align:left;color:inherit}.entry-row:last-child{border-bottom:0}.entry-row:active{background:#f7fafb}.entry-icon{width:38px;height:38px;border-radius:11px;background:#f1f6f7;color:var(--accent);display:grid;place-items:center;flex:0 0 38px}.entry-icon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}.entry-copy{flex:1;min-width:0}.entry-copy b{display:block;font-size:16px}.entry-copy small{display:block;color:var(--muted);font-size:13px;margin-top:2px}.primary-entry .entry-icon{background:var(--accent);color:#fff}.sleep-section{margin-top:14px}.sleep-clean{min-height:64px}.sleep-clean .entry-icon{background:transparent}.chev{font-size:24px;color:#8b989f;font-weight:400}.actions{display:none!important}
 </style>
 </head>
 <body>
 <div class="app">
 <header><div><h1>Miktionstagebuch</h1><div class="sub" id="dateLabel"></div></div><button class="gear no-print" onclick="openSettings()"><svg viewBox="0 0 24 24" aria-hidden="true" style="width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1z"/></svg></button></header>
 
-<div id="todayView" class="view active"><section class="card">
-  <b id="dayTitle">Tag 1 von 3</b><div class="progress" id="progress"></div>
-  <p class="sub" style="margin-bottom:0">Einträge dauern nur wenige Sekunden. Uhrzeit wird automatisch übernommen.</p>
+<div id="todayView" class="view active">
+<section class="today-progress">
+ <div class="today-progress-head"><div><span class="eyebrow">DOKUMENTATION</span><b id="dayTitle">Tag 1 von 3</b></div><span class="status-pill">läuft</span></div>
+ <div class="progress" id="progress"></div>
 </section>
 
-<div class="actions no-print">
- <button class="action" onclick="openEntry('drink')"><span>💧</span><div>Trinkmenge</div></button>
- <button class="action" onclick="openEntry('void')"><span>🚽</span><div>Wasser gelassen<div class="sub">Menge & Drang</div></div></button>
- <button class="action" onclick="openEntry('leak')"><span>💦</span><div>Urin verloren<div class="sub">Menge, Situation & Vorlage</div></div></button>
-</div>
+<section class="entry-section no-print">
+ <div class="section-title">Eintrag hinzufügen</div>
+ <div class="entry-list">
+  <button class="entry-row primary-entry" onclick="openEntry('void')">
+   <span class="entry-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5s5 6 5 10.8a5 5 0 0 1-10 0C7 8.5 12 2.5 12 2.5z"/><path d="M9.5 14.3c.5 1.2 1.4 2 2.8 2.2"/></svg></span><span class="entry-copy"><b>Wasser gelassen</b><small>Menge &amp; Drang</small></span><span class="chev">›</span>
+  </button>
+  <button class="entry-row" onclick="openEntry('drink')">
+   <span class="entry-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10l-1 17H8L7 3z"/><path d="M8 8h8"/><path d="M9 12c2 1 4-1 6 0"/></svg></span><span class="entry-copy"><b>Trinkmenge</b><small>Getränk &amp; Menge</small></span><span class="chev">›</span>
+  </button>
+  <button class="entry-row" onclick="openEntry('leak')">
+   <span class="entry-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4S4 8.5 4 12a4 4 0 0 0 8 0C12 8.5 8 4 8 4z"/><path d="M17 9s-3 3.4-3 6a3 3 0 0 0 6 0c0-2.6-3-6-3-6z"/></svg></span><span class="entry-copy"><b>Urin verloren</b><small>Menge, Situation &amp; Vorlage</small></span><span class="chev">›</span>
+  </button>
+ </div>
+</section>
 
-<section class="card compact-sleep">
- <button class="sleep-link" onclick="openSleep()" aria-label="Nachtruhe eintragen oder bearbeiten">
-  <span class="sleep-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5z"/></svg></span>
-  <span><b>Nachtruhe</b><small id="sleepSummary">Noch nicht eingetragen</small></span><span class="chev">›</span>
+<section class="sleep-section">
+ <button class="entry-row sleep-clean" onclick="openSleep()" aria-label="Nachtruhe eintragen oder bearbeiten">
+  <span class="entry-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5z"/></svg></span><span class="entry-copy"><b>Nachtruhe</b><small id="sleepSummary">Noch nicht eingetragen</small></span><span class="chev">›</span>
  </button>
 </section>
-
-
 </div><div id="overviewView" class="view"><section class="card"><b>Übersicht</b><p class="sub">Tageswerte und dokumentierte Einträge im Überblick.</p><div id="dayOverview"></div></section></div><div id="analysisView" class="view"><section class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>Ärztliche Auswertung</b><div class="sub" id="analysisDays"></div></div><button class="smallbtn primary" onclick="reportPreview()">Arztbericht</button></div></section><div class="kpis" id="analysisKpis"></div><div class="chartbox"><b>Trinkmenge vs. Harnmenge</b><div class="bars" id="volumeBars"></div><div class="barlabels" id="volumeLabels"></div><div class="sub">Hell: Trinkmenge · Dunkel: Harnmenge</div></div><div class="chartbox"><b>Miktionen pro Tag</b><div class="bars" id="voidBars"></div><div class="barlabels" id="voidLabels"></div></div><section class="card"><b>Weitere Parameter</b><div class="sub" id="analysisDetails" style="line-height:1.7;margin-top:8px"></div></section></div></div><nav class="bottomnav no-print"><div><button class="navbtn active" data-view="today" onclick="showView('today')"><span>⌂</span>Heute</button><button class="navbtn" data-view="overview" onclick="showView('overview')"><span>▤</span>Übersicht</button><button class="navbtn" data-view="analysis" onclick="showView('analysis')"><span>▥</span>Auswertung</button></div></nav>
 
 <div class="modal" id="modal" onclick="backdrop(event)"><div class="sheet" id="sheet"></div></div>
